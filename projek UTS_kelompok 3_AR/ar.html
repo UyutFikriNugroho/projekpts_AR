@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* CSS Modal Kartu Nama */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      font-family: 'Poppins', sans-serif;
+      box-sizing: border-box;
+    }
+
+    .modal-content {
+      background: linear-gradient(135deg, #1e1e2f, #252542);
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 350px;
+      width: 100%;
+      color: #eee;
+      position: relative;
+      text-align: center;
+      border: 2px solid cyan;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+      animation: zoomFade 0.3s ease;
+    }
+
+    @keyframes zoomFade {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 32px;
+      color: #888;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    .close-btn:hover {
+      color: #fff;
+    }
+
+    #modalCard {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 15px cyan;
+      display: block;
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 999;
+      background: rgba(0, 0, 0, 0.5);
+      color: cyan;
+      padding: 8px 15px;
+      border: 1px solid cyan;
+      border-radius: 8px;
+      text-decoration: none;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+    }
+  </style>
+  <script>
+    // A-Frame Component untuk Klik Foto AR
+    AFRAME.registerComponent('klik-kartu', {
+      schema: { member: { type: 'string' } },
+      init: function () {
+        let data = this.data;
+        this.el.addEventListener('click', function () {
+          openModal(data.member);
+        });
+      }
+    });
+  </script>
+</head>
+
+<body style="margin:0; overflow:hidden;">
+
+  <!-- Tombol Kembali -->
+  <a href="index.html" class="back-btn">⬅ Kembali</a>
+
+  <!-- Modal Pop Up Kartu Nama -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeModal()">&times;</button>
+      <img id="modalCard" src="">
+    </div>
+  </div>
+
+  <a-scene embedded arjs="debugUIEnabled: false;" cursor="rayOrigin: mouse" raycaster="objects: .clickable">
+
+    <!-- LOAD FOTO -->
+    <a-assets>
+      <img id="safira" src="assets/safira.jpg">
+      <img id="uyut" src="assets/uyut.jpg">
+      <img id="faiz" src="assets/faiz.jpg">
+    </a-assets>
+
+    <a-marker preset="hiro">
+
+      <!-- Wrapper untuk semua elemen -->
+      <a-entity position="0 0 -1.8" rotation="-90 0 0">
+
+        <!-- CARD UTAMA -->
+        <a-plane position="0 0 0" width="3.2" height="2.2" color="#020617" opacity="0.9"></a-plane>
+
+        <!-- JUDUL -->
+        <a-text value="KELOMPOK KAMI" position="0 0.9 0.05" align="center" color="#22d3ee" scale="1.2 1.2 1.2">
+        </a-text>
+
+        <!-- ===== SAFIRA ===== -->
+        <a-image class="clickable" klik-kartu="member:safira" src="#safira" position="-1 0.1 0.05" width="0.8"
+          height="1">
+        </a-image>
+
+        <a-text value="Safira" position="-1 -0.6 0.05" align="center">
+        </a-text>
+
+        <!-- ===== UYUT ===== -->
+        <a-image class="clickable" klik-kartu="member:uyut" src="#uyut" position="0 0.1 0.05" width="0.8" height="1">
+        </a-image>
+
+        <a-text value="Uyut" position="0 -0.6 0.05" align="center" scale="0.8 0.8 0.8">
+        </a-text>
+
+        <!-- ===== FAIZ ===== -->
+        <a-image class="clickable" klik-kartu="member:faiz" src="#faiz" position="1 0.1 0.05" width="0.8" height="1">
+        </a-image>
+
+        <a-text value="Faiz" position="1 -0.6 0.05" align="center">
+        </a-text>
+
+        <!-- FOOTER -->
+        <a-text value="SOLIDARITAS - KREATIVITAS - INOVASI" position="0 -0.95 0.05" align="center" color="#38bdf8"
+          scale="0.6 0.6 0.6">
+        </a-text>
+
+      </a-entity>
+
+    </a-marker>
+
+    <a-entity camera></a-entity>
+
+  </a-scene>
+
+  <script>
+    // Data Kartu Nama Anggota
+    const profiles = {
+      faiz: {
+        kartu: "img/kartufaiz.png"
+      },
+      uyut: {
+        kartu: "img/kartuuyut.png"
+      },
+      safira: {
+        kartu: "img/kartusafira.png"
+      }
+    };
+
+    const modal = document.getElementById('modal');
+    const modalCard = document.getElementById('modalCard');
+
+    // Fungsi untuk Membuka Kartu Nama
+    function openModal(memberKey) {
+      const key = memberKey ? memberKey.trim().toLowerCase() : "";
+      const data = profiles[key];
+      if (data) {
+        modalCard.src = data.kartu;
+        modal.style.display = 'flex';
+      } else {
+        console.error("Data kartu tidak ditemukan untuk:", memberKey);
+      }
+    }
+
+    // Fungsi untuk Menutup Kartu Nama
+    function closeModal() {
+      modal.style.display = 'none';
+    }
+  </script>
+
+</body>
+
+</html>
